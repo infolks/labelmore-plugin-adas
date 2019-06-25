@@ -59,9 +59,8 @@ class PixelwiseEncoder extends labelmore_devkit_1.Encoder {
         frame.labels.forEach((label, index) => {
             if (label.type === labelmore_devkit_1.DEFAULT_LABEL_TYPES.contour) {
                 const class_ = project.options.labelClasses.find(cl => cl.id === label.class_id);
-                const track_id = frame_num * numLabels + index;
-                FrameObjectLabels.push(this.encodeLabel(label, class_, track_id, {
-                    name: `${channel}_${frame_name}_${class_.name}_${track_id}.png`,
+                FrameObjectLabels.push(this.encodeLabel(label, class_, {
+                    name: `${channel}_${frame_name}_${class_.name}_${label.id}.png`,
                     size: frame.props.size || {
                         width: 0,
                         height: 0
@@ -75,7 +74,7 @@ class PixelwiseEncoder extends labelmore_devkit_1.Encoder {
             FrameObjectLabels
         };
     }
-    encodeLabel(label, class_, track_id, image) {
+    encodeLabel(label, class_, image) {
         let attributes = {};
         console.log('attributes:', label.attributes);
         for (let key in label.attributes) {
@@ -93,7 +92,7 @@ class PixelwiseEncoder extends labelmore_devkit_1.Encoder {
             height: image.size.height,
             category: class_.name,
             Hierarchy: "",
-            Trackid: track_id,
+            Trackid: label.id,
             attributes,
             imagetype: "",
             imagename: image.name,

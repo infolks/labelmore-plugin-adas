@@ -85,14 +85,11 @@ export class PixelwiseEncoder extends Encoder {
 
                 const class_ = project.options.labelClasses.find(cl => cl.id === label.class_id)
 
-                const track_id = frame_num*numLabels + index
-
                 FrameObjectLabels.push(this.encodeLabel(
                     label, 
-                    class_, 
-                    track_id, 
+                    class_,
                     {
-                        name: `${channel}_${frame_name}_${class_.name}_${track_id}.png`,
+                        name: `${channel}_${frame_name}_${class_.name}_${label.id}.png`,
                         size: frame.props.size || {
                             width: 0,
                             height: 0
@@ -109,7 +106,7 @@ export class PixelwiseEncoder extends Encoder {
         }
     }
 
-    private encodeLabel(label: Label<ContourProps>, class_: LabelClass, track_id: number, image: ImageInfo) {
+    private encodeLabel(label: Label<ContourProps>, class_: LabelClass, image: ImageInfo) {
 
         let attributes = {}
 
@@ -134,7 +131,7 @@ export class PixelwiseEncoder extends Encoder {
             height: image.size.height,
             category: class_.name,
             Hierarchy: "",
-            Trackid: track_id,
+            Trackid: label.id,
             attributes,
             imagetype: "",
             imagename: image.name,

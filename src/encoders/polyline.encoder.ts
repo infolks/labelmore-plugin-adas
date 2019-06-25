@@ -68,8 +68,6 @@ export class PolylineEncoder extends Encoder {
 
         const FrameObjectLabels = []
 
-        const numLabels = frame.labels.length
-
         // const source = this.pm.getSource(project.options.inputSource)
 
         // const image = new Image()
@@ -82,12 +80,10 @@ export class PolylineEncoder extends Encoder {
 
                 const class_ = project.options.labelClasses.find(cl => cl.id === label.class_id)
 
-                const track_id = frame_num*numLabels + index
 
                 FrameObjectLabels.push(this.encodeLabel(
                     label, 
                     class_, 
-                    track_id, 
                     {
                         name: frame.name,
                         size: frame.props.size || {
@@ -106,7 +102,7 @@ export class PolylineEncoder extends Encoder {
         }
     }
 
-    private encodeLabel(label: Label<PolylineProps>, class_: LabelClass, track_id: number, image: ImageInfo) {
+    private encodeLabel(label: Label<PolylineProps>, class_: LabelClass, image: ImageInfo) {
 
         let attributes = {}
 
@@ -131,7 +127,7 @@ export class PolylineEncoder extends Encoder {
             height: 0.0,
             category: class_.name,
             Hierarchy: "",
-            Trackid: track_id,
+            Trackid: label.id,
             attributes,
             imagetype: "",
             imagename: image.name,

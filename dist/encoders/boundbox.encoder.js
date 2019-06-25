@@ -56,7 +56,7 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
             if (label.type === labelmore_devkit_1.DEFAULT_LABEL_TYPES.boundbox) {
                 const class_ = project.options.labelClasses.find(cl => cl.id === label.class_id);
                 const track_id = frame_num * numLabels + index;
-                FrameObjectLabels.push(this.encodeLabel(label, class_, track_id, {
+                FrameObjectLabels.push(this.encodeLabel(label, class_, {
                     name: frame.name,
                     size: frame.props.size || {
                         width: 0,
@@ -71,7 +71,7 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
             FrameObjectLabels
         };
     }
-    encodeLabel(label, class_, track_id, image) {
+    encodeLabel(label, class_, image) {
         let attributes = {};
         console.log('attributes:', label.attributes);
         for (let key in label.attributes) {
@@ -89,7 +89,7 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
             height: ymax - ymin,
             category: class_.name,
             Hierarchy: "",
-            Trackid: track_id,
+            Trackid: label.id,
             attributes,
             imagetype: "",
             imagename: image.name,

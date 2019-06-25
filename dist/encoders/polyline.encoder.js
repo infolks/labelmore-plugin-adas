@@ -48,15 +48,13 @@ class PolylineEncoder extends labelmore_devkit_1.Encoder {
     }
     encodeObjectLabels(frame, project, frame_num) {
         const FrameObjectLabels = [];
-        const numLabels = frame.labels.length;
         // const source = this.pm.getSource(project.options.inputSource)
         // const image = new Image()
         // image.src = source.join(project.options.inputSource, frame.name)
         frame.labels.forEach((label, index) => {
             if (label.type === labelmore_devkit_1.DEFAULT_LABEL_TYPES.line) {
                 const class_ = project.options.labelClasses.find(cl => cl.id === label.class_id);
-                const track_id = frame_num * numLabels + index;
-                FrameObjectLabels.push(this.encodeLabel(label, class_, track_id, {
+                FrameObjectLabels.push(this.encodeLabel(label, class_, {
                     name: frame.name,
                     size: frame.props.size || {
                         width: 0,
@@ -71,7 +69,7 @@ class PolylineEncoder extends labelmore_devkit_1.Encoder {
             FrameObjectLabels
         };
     }
-    encodeLabel(label, class_, track_id, image) {
+    encodeLabel(label, class_, image) {
         let attributes = {};
         console.log('attributes:', label.attributes);
         for (let key in label.attributes) {
@@ -89,7 +87,7 @@ class PolylineEncoder extends labelmore_devkit_1.Encoder {
             height: 0.0,
             category: class_.name,
             Hierarchy: "",
-            Trackid: track_id,
+            Trackid: label.id,
             attributes,
             imagetype: "",
             imagename: image.name,

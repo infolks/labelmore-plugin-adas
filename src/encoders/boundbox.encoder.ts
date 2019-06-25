@@ -86,7 +86,6 @@ export class BoundboxEncoder extends Encoder {
                 FrameObjectLabels.push(this.encodeLabel(
                     label, 
                     class_, 
-                    track_id, 
                     {
                         name: frame.name,
                         size: frame.props.size || {
@@ -105,7 +104,7 @@ export class BoundboxEncoder extends Encoder {
         }
     }
 
-    private encodeLabel(label: Label<BoundboxProps>, class_: LabelClass, track_id: number, image: ImageInfo) {
+    private encodeLabel(label: Label<BoundboxProps>, class_: LabelClass, image: ImageInfo) {
 
         let attributes = {}
 
@@ -130,7 +129,7 @@ export class BoundboxEncoder extends Encoder {
             height: ymax - ymin,
             category: class_.name,
             Hierarchy: "",
-            Trackid: track_id,
+            Trackid: label.id,
             attributes,
             imagetype: "",
             imagename: image.name,
