@@ -90,7 +90,7 @@ export class PolylineEncoder extends Encoder {
                     track_id, 
                     {
                         name: frame.name,
-                        size: {
+                        size: frame.props.size || {
                             width: 0,
                             height: 0
                         }

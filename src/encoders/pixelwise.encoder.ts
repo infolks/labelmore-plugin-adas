@@ -75,13 +75,13 @@ export class PixelwiseEncoder extends Encoder {
             'low': 'CAMERALow'
         }
 
-        const channel = channelMap[project.options.extras.channel]
+        const channel = project.options.extras.channel? channelMap[project.options.extras.channel]: null
 
         const frame_name = frame.name.split('.').slice(0, -1)
 
         frame.labels.forEach((label, index) => {
 
-            if (label.type === DEFAULT_LABEL_TYPES.boundbox) {
+            if (label.type === DEFAULT_LABEL_TYPES.contour) {
 
                 const class_ = project.options.labelClasses.find(cl => cl.id === label.class_id)
 
@@ -93,7 +93,7 @@ export class PixelwiseEncoder extends Encoder {
                     track_id, 
                     {
                         name: `${channel}_${frame_name}_${class_.name}_${track_id}.png`,
-                        size: {
+                        size: frame.props.size || {
                             width: 0,
                             height: 0
                         }

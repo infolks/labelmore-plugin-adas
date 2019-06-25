@@ -54,10 +54,10 @@ class PixelwiseEncoder extends labelmore_devkit_1.Encoder {
             'high': 'CAMERAHigh',
             'low': 'CAMERALow'
         };
-        const channel = channelMap[project.options.extras.channel];
+        const channel = project.options.extras.channel ? channelMap[project.options.extras.channel] : null;
         const frame_name = frame.name.split('.').slice(0, -1);
         frame.labels.forEach((label, index) => {
-            if (label.type === labelmore_devkit_1.DEFAULT_LABEL_TYPES.boundbox) {
+            if (label.type === labelmore_devkit_1.DEFAULT_LABEL_TYPES.contour) {
                 const class_ = project.options.labelClasses.find(cl => cl.id === label.class_id);
                 const track_id = frame_num * numLabels + index;
                 FrameObjectLabels.push(this.encodeLabel(label, class_, track_id, {
