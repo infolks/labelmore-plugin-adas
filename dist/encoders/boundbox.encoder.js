@@ -58,7 +58,7 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
                 const track_id = frame_num * numLabels + index;
                 FrameObjectLabels.push(this.encodeLabel(label, class_, track_id, {
                     name: frame.name,
-                    size: {
+                    size: frame.props.size || {
                         width: 0,
                         height: 0
                     }

@@ -62,7 +62,7 @@ class PixelwiseEncoder extends labelmore_devkit_1.Encoder {
                 const track_id = frame_num * numLabels + index;
                 FrameObjectLabels.push(this.encodeLabel(label, class_, track_id, {
                     name: `${channel}_${frame_name}_${class_.name}_${track_id}.png`,
-                    size: {
+                    size: frame.props.size || {
                         width: 0,
                         height: 0
                     }
