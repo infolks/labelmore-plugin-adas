@@ -70,6 +70,7 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
     }
     encodeLabel(label, class_, track_id, image) {
         let attributes = {};
+        console.log('attributes:', attributes);
         for (let key in label.attributes) {
             const value = attributes[key];
             if (value && value.length) {
@@ -85,7 +86,7 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
             height: ymax - ymin,
             category: class_.name,
             Hierarchy: "",
-            Trackid: 3,
+            Trackid: track_id,
             attributes,
             imagetype: "",
             imagename: "",

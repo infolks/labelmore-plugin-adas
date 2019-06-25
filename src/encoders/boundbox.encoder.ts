@@ -110,6 +110,8 @@ export class BoundboxEncoder extends Encoder {
 
         let attributes = {}
 
+        console.log('attributes:',attributes)
+
         for (let key in label.attributes) {
 
             const value = attributes[key]
@@ -129,7 +131,7 @@ export class BoundboxEncoder extends Encoder {
             height: ymax - ymin,
             category: class_.name,
             Hierarchy: "",
-            Trackid: 3,
+            Trackid: track_id,
             attributes,
             imagetype: "",
             imagename: "",
