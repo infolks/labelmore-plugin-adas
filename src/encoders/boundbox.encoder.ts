@@ -20,10 +20,10 @@ export class BoundboxEncoder extends Encoder {
         const frame_num = project.frames.findIndex(f => f.name === frame.name)
 
         // object labels
-        const object_json = JSON.stringify(this.encodeObjectLabels(frame, project, frame_num), null, 4)
+        const object_json = JSON.stringify(this.encodeObjectLabels(frame, project, frame_num), undefined, 4)
 
         // scene labels
-        const scene_json = JSON.stringify(this.encodeSceneLabels(frame, project, frame_num), null, 4)
+        const scene_json = JSON.stringify(this.encodeSceneLabels(frame, project, frame_num), undefined, 4)
 
         const frame_name = frame.name.split('.').slice(0, -1)
 
@@ -56,7 +56,7 @@ export class BoundboxEncoder extends Encoder {
             const value = frame.props.scene[key]
 
             if (value) {
-                FrameSceneLabels[key] = value
+                FrameSceneLabels[key.trim()] = value
             }
         }
 
@@ -117,7 +117,7 @@ export class BoundboxEncoder extends Encoder {
             const value = label.attributes[key]
 
             if (value && value.length) {
-                attributes[key] = value
+                attributes[key.trim()] = value
             }
         }
 
