@@ -1,0 +1,32 @@
+{
+  "name": "labelmore-plugin-adas",
+  "version": "1.0.0",
+  "description": "LabelMore plugin for ADAS projects",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infolks/labelmore-plugin-adas.git"
+  },
+  "keywords": [
+    "labelmore",
+    "annotation",
+    "adas",
+    "plugin",
+    "infolks"
+  ],
+  "author": "infolks",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/infolks/labelmore-plugin-adas/issues"
+  },
+  "homepage": "https://github.com/infolks/labelmore-plugin-adas#readme",
+  "devDependencies": {
+    "@infolks/labelmore-devkit": "^1.4.10",
+    "@types/node": "^12.0.10",
+    "typescript": "^3.5.2"
+  }
+}
