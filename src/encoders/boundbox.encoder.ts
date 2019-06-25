@@ -114,7 +114,7 @@ export class BoundboxEncoder extends Encoder {
 
         for (let key in label.attributes) {
 
-            const value = attributes[key]
+            const value = label.attributes[key]
 
             if (value && value.length) {
                 attributes[key] = value
