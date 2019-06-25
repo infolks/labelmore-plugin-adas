@@ -1,4 +1,4 @@
-import {Encoder, Project, Frame, FileWriteInfo, Label, BoundboxProps, LabelClass, DEFAULT_LABEL_TYPES, ProjectManager, ContourProps} from '@infolks/labelmore-devkit'
+import {Encoder, Project, Frame, FileWriteInfo, Label, LabelClass, DEFAULT_LABEL_TYPES, ProjectManager, ContourProps} from '@infolks/labelmore-devkit'
 import {ImageInfo} from '../types'
 
 export class PixelwiseEncoder extends Encoder {
