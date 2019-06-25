@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const labelmore_devkit_1 = require("@infolks/labelmore-devkit");
-class BoundboxEncoder extends labelmore_devkit_1.Encoder {
+class PixelwiseEncoder extends labelmore_devkit_1.Encoder {
     constructor(pm) {
         super();
         this.pm = pm;
-        this.title = "ADAS Boundbox";
-        this.icon = `<i class="fas fa-vector-square"></i>`;
-        this.name = 'encoders.adas.boundbox';
+        this.title = "ADAS Pixelwise";
+        this.icon = `<i class="fas fa-th"></i>`;
+        this.name = 'encoders.adas.pixelwise';
     }
     encode(frame, project) {
         const frame_num = project.frames.findIndex(f => f.name === frame.name);
@@ -18,12 +18,12 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
         const frame_name = frame.name.split('.').slice(0, -1);
         return [
             {
-                name: `${project.title}_BoundingBox_${frame_name}_object.json`,
+                name: `${project.title}_Pixelwise_${frame_name}_object.json`,
                 subdirectory: labelmore_devkit_1.Encoder.SUBFOLDERS.ANNOTATIONS,
                 data: Buffer.from(object_json)
             },
             {
-                name: `${project.title}_BoundingBox_${frame_name}_scene.json`,
+                name: `${project.title}_Pixelwise_${frame_name}_scene.json`,
                 subdirectory: labelmore_devkit_1.Encoder.SUBFOLDERS.ANNOTATIONS,
                 data: Buffer.from(scene_json)
             }
@@ -49,15 +49,19 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
     encodeObjectLabels(frame, project, frame_num) {
         const FrameObjectLabels = [];
         const numLabels = frame.labels.length;
-        // const source = this.pm.getSource(project.options.inputSource)
-        // const image = new Image()
-        // image.src = source.join(project.options.inputSource, frame.name)
+        const channelMap = {
+            'medium': 'CAMERAMedium',
+            'high': 'CAMERAHigh',
+            'low': 'CAMERALow'
+        };
+        const channel = channelMap[project.options.extras.channel];
+        const frame_name = frame.name.split('.').slice(0, -1);
         frame.labels.forEach((label, index) => {
             if (label.type === labelmore_devkit_1.DEFAULT_LABEL_TYPES.boundbox) {
                 const class_ = project.options.labelClasses.find(cl => cl.id === label.class_id);
                 const track_id = frame_num * numLabels + index;
                 FrameObjectLabels.push(this.encodeLabel(label, class_, track_id, {
-                    name: frame.name,
+                    name: `${channel}_${frame_name}_${class_.name}_${track_id}.png`,
                     size: {
                         width: 0,
                         height: 0
@@ -80,13 +84,13 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
                 attributes[key.trim()] = value;
             }
         }
-        const { xmin, xmax, ymin, ymax } = label.props;
+        const points = label.props.points;
         return {
             baseimage: "",
             roll: 0,
             pitch: 0,
-            width: xmax - xmin,
-            height: ymax - ymin,
+            width: image.size.width,
+            height: image.size.height,
             category: class_.name,
             Hierarchy: "",
             Trackid: track_id,
@@ -98,30 +102,30 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
             imagewidth: image.size.width,
             shape: {
                 "Algo Generated": "NO",
-                "Manually Corrected": "YES",
-                type: "Box",
+                "Manually Corrected": "NO",
+                type: "Pixel",
                 thickness: 2,
-                x: [xmin, xmax, xmax, xmin],
-                y: [ymin, ymin, ymax, ymax],
+                x: points.map(p => p.x),
+                y: points.map(p => p.y),
                 z: []
             },
             keypoints: {}
         };
     }
 }
-exports.BoundboxEncoder = BoundboxEncoder;
+exports.PixelwiseEncoder = PixelwiseEncoder;
 exports.default = {
     install(Vue, opts) {
         Vue.mixin({
             beforeCreate() {
                 if (this.$projects) {
-                    const boxEnc = new BoundboxEncoder(this.$projects);
-                    if (!this.$projects.hasEncoder(boxEnc.name)) {
-                        this.$projects.registerEncoder(boxEnc.name, boxEnc);
+                    const pixelEnc = new PixelwiseEncoder(this.$projects);
+                    if (!this.$projects.hasEncoder(pixelEnc.name)) {
+                        this.$projects.registerEncoder(pixelEnc.name, pixelEnc);
                     }
                 }
             }
         });
     }
 };
-//# sourceMappingURL=boundbox.encoder.js.map
+//# sourceMappingURL=pixelwise.encoder.js.map

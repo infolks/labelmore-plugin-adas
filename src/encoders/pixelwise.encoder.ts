@@ -1,11 +1,11 @@
-import {Encoder, Project, Frame, FileWriteInfo, Label, BoundboxProps, LabelClass, DEFAULT_LABEL_TYPES, ProjectManager} from '@infolks/labelmore-devkit'
+import {Encoder, Project, Frame, FileWriteInfo, Label, BoundboxProps, LabelClass, DEFAULT_LABEL_TYPES, ProjectManager, ContourProps} from '@infolks/labelmore-devkit'
 import {ImageInfo} from '../types'
 
-export class BoundboxEncoder extends Encoder {
+export class PixelwiseEncoder extends Encoder {
     
-    public readonly title = "ADAS Boundbox"
-    public readonly icon = `<i class="fas fa-vector-square"></i>`
-    public readonly name = 'encoders.adas.boundbox'
+    public readonly title = "ADAS Pixelwise"
+    public readonly icon = `<i class="fas fa-th"></i>`
+    public readonly name = 'encoders.adas.pixelwise'
 
     constructor(protected pm: ProjectManager) {
         super()
@@ -25,12 +25,12 @@ export class BoundboxEncoder extends Encoder {
 
         return [
             {
-                name: `${project.title}_BoundingBox_${frame_name}_object.json`,
+                name: `${project.title}_Pixelwise_${frame_name}_object.json`,
                 subdirectory: Encoder.SUBFOLDERS.ANNOTATIONS,
                 data: Buffer.from(object_json)
             },
             {
-                name: `${project.title}_BoundingBox_${frame_name}_scene.json`,
+                name: `${project.title}_Pixelwise_${frame_name}_scene.json`,
                 subdirectory: Encoder.SUBFOLDERS.ANNOTATIONS,
                 data: Buffer.from(scene_json)
             }
@@ -69,11 +69,15 @@ export class BoundboxEncoder extends Encoder {
 
         const numLabels = frame.labels.length
 
-        // const source = this.pm.getSource(project.options.inputSource)
+        const channelMap = {
+            'medium': 'CAMERAMedium',
+            'high': 'CAMERAHigh',
+            'low': 'CAMERALow'
+        }
 
-        // const image = new Image()
+        const channel = channelMap[project.options.extras.channel]
 
-        // image.src = source.join(project.options.inputSource, frame.name)
+        const frame_name = frame.name.split('.').slice(0, -1)
 
         frame.labels.forEach((label, index) => {
 
@@ -88,7 +92,7 @@ export class BoundboxEncoder extends Encoder {
                     class_, 
                     track_id, 
                     {
-                        name: frame.name,
+                        name: `${channel}_${frame_name}_${class_.name}_${track_id}.png`,
                         size: {
                             width: 0,
                             height: 0
@@ -105,7 +109,7 @@ export class BoundboxEncoder extends Encoder {
         }
     }
 
-    private encodeLabel(label: Label<BoundboxProps>, class_: LabelClass, track_id: number, image: ImageInfo) {
+    private encodeLabel(label: Label<ContourProps>, class_: LabelClass, track_id: number, image: ImageInfo) {
 
         let attributes = {}
 
@@ -120,14 +124,14 @@ export class BoundboxEncoder extends Encoder {
             }
         }
 
-        const {xmin, xmax, ymin, ymax} = label.props
+        const points = label.props.points
 
         return {
             baseimage: "",
             roll: 0,
             pitch: 0,
-            width: xmax - xmin,
-            height: ymax - ymin,
+            width: image.size.width,
+            height: image.size.height,
             category: class_.name,
             Hierarchy: "",
             Trackid: track_id,
@@ -139,11 +143,11 @@ export class BoundboxEncoder extends Encoder {
             imagewidth: image.size.width,
             shape: {
                 "Algo Generated": "NO",
-                "Manually Corrected": "YES",
-                type: "Box",
+                "Manually Corrected": "NO",
+                type: "Pixel",
                 thickness: 2,
-                x: [xmin, xmax, xmax, xmin],
-                y: [ymin, ymin, ymax, ymax],
+                x: points.map(p => p.x),
+                y: points.map(p => p.y),
                 z: []
             },
             keypoints: {}
@@ -159,11 +163,11 @@ export default {
 
                 if (this.$projects) {
 
-                    const boxEnc = new BoundboxEncoder(this.$projects)
+                    const pixelEnc = new PixelwiseEncoder(this.$projects)
 
-                    if (!this.$projects.hasEncoder(boxEnc.name)) {
+                    if (!this.$projects.hasEncoder(pixelEnc.name)) {
 
-                        this.$projects.registerEncoder(boxEnc.name, boxEnc)
+                        this.$projects.registerEncoder(pixelEnc.name, pixelEnc)
                     }
                 }
             }

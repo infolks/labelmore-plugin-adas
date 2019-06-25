@@ -1,11 +1,12 @@
-import {Encoder, Project, Frame, FileWriteInfo, Label, BoundboxProps, LabelClass, DEFAULT_LABEL_TYPES, ProjectManager} from '@infolks/labelmore-devkit'
+import {Encoder, Project, Frame, FileWriteInfo, Label, BoundboxProps, LabelClass, DEFAULT_LABEL_TYPES, ProjectManager, PolylineProps} from '@infolks/labelmore-devkit'
+
 import {ImageInfo} from '../types'
 
-export class BoundboxEncoder extends Encoder {
+export class PolylineEncoder extends Encoder {
     
-    public readonly title = "ADAS Boundbox"
-    public readonly icon = `<i class="fas fa-vector-square"></i>`
-    public readonly name = 'encoders.adas.boundbox'
+    public readonly title = "ADAS Polyline"
+    public readonly icon = `<i class="fas fa-bezier-curve"></i>`
+    public readonly name = 'encoders.adas.polyline'
 
     constructor(protected pm: ProjectManager) {
         super()
@@ -25,12 +26,12 @@ export class BoundboxEncoder extends Encoder {
 
         return [
             {
-                name: `${project.title}_BoundingBox_${frame_name}_object.json`,
+                name: `${project.title}_Polyline_${frame_name}_object.json`,
                 subdirectory: Encoder.SUBFOLDERS.ANNOTATIONS,
                 data: Buffer.from(object_json)
             },
             {
-                name: `${project.title}_BoundingBox_${frame_name}_scene.json`,
+                name: `${project.title}_Polyline_${frame_name}_scene.json`,
                 subdirectory: Encoder.SUBFOLDERS.ANNOTATIONS,
                 data: Buffer.from(scene_json)
             }
@@ -77,7 +78,7 @@ export class BoundboxEncoder extends Encoder {
 
         frame.labels.forEach((label, index) => {
 
-            if (label.type === DEFAULT_LABEL_TYPES.boundbox) {
+            if (label.type === DEFAULT_LABEL_TYPES.line) {
 
                 const class_ = project.options.labelClasses.find(cl => cl.id === label.class_id)
 
@@ -105,7 +106,7 @@ export class BoundboxEncoder extends Encoder {
         }
     }
 
-    private encodeLabel(label: Label<BoundboxProps>, class_: LabelClass, track_id: number, image: ImageInfo) {
+    private encodeLabel(label: Label<PolylineProps>, class_: LabelClass, track_id: number, image: ImageInfo) {
 
         let attributes = {}
 
@@ -120,14 +121,14 @@ export class BoundboxEncoder extends Encoder {
             }
         }
 
-        const {xmin, xmax, ymin, ymax} = label.props
+        const points = label.props.points
 
         return {
             baseimage: "",
             roll: 0,
             pitch: 0,
-            width: xmax - xmin,
-            height: ymax - ymin,
+            width: 0.0,
+            height: 0.0,
             category: class_.name,
             Hierarchy: "",
             Trackid: track_id,
@@ -140,10 +141,10 @@ export class BoundboxEncoder extends Encoder {
             shape: {
                 "Algo Generated": "NO",
                 "Manually Corrected": "YES",
-                type: "Box",
+                type: "Polyline",
                 thickness: 2,
-                x: [xmin, xmax, xmax, xmin],
-                y: [ymin, ymin, ymax, ymax],
+                x: points.map(p => p.x),
+                y: points.map(p => p.y),
                 z: []
             },
             keypoints: {}
@@ -159,11 +160,11 @@ export default {
 
                 if (this.$projects) {
 
-                    const boxEnc = new BoundboxEncoder(this.$projects)
+                    const lineEnc = new PolylineEncoder(this.$projects)
 
-                    if (!this.$projects.hasEncoder(boxEnc.name)) {
+                    if (!this.$projects.hasEncoder(lineEnc.name)) {
 
-                        this.$projects.registerEncoder(boxEnc.name, boxEnc)
+                        this.$projects.registerEncoder(lineEnc.name, lineEnc)
                     }
                 }
             }
