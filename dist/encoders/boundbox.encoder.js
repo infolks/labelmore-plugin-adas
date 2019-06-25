@@ -70,7 +70,7 @@ class BoundboxEncoder extends labelmore_devkit_1.Encoder {
     }
     encodeLabel(label, class_, track_id, image) {
         let attributes = {};
-        console.log('attributes:', attributes);
+        console.log('attributes:', label.attributes);
         for (let key in label.attributes) {
             const value = attributes[key];
             if (value && value.length) {

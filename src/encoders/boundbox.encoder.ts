@@ -110,7 +110,7 @@ export class BoundboxEncoder extends Encoder {
 
         let attributes = {}
 
-        console.log('attributes:',attributes)
+        console.log('attributes:',label.attributes)
 
         for (let key in label.attributes) {
 
