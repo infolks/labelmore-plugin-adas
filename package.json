@@ -1,6 +1,6 @@
 {
   "name": "labelmore-plugin-adas",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "LabelMore plugin for ADAS projects",
   "main": "dist/index.js",
   "scripts": {
