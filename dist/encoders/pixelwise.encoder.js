@@ -42,7 +42,7 @@ class PixelwiseEncoder extends labelmore_devkit_1.Encoder {
         }
         return {
             FrameNumber: frame_num,
-            TimeStamp: new Date().getTime(),
+            TimeStamp: frame.name.split('.').slice(0, -1),
             FrameSceneLabels
         };
     }
@@ -70,7 +70,7 @@ class PixelwiseEncoder extends labelmore_devkit_1.Encoder {
         });
         return {
             FrameNumber: frame_num,
-            TimeStamp: new Date().getTime(),
+            TimeStamp: frame.name.split('.').slice(0, -1),
             FrameObjectLabels
         };
     }
