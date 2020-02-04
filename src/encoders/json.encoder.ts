@@ -124,10 +124,23 @@ export class JsonEncoder extends Encoder {
             const value = frame.props.scene[key]
 
             if (value) {
-                FrameSceneLabels[key.trim()] = {
-                    endtimestamp: frame_name,
-                    starttimestamp: frame_name,
-                    value
+
+                if (FrameSceneLabels[key.trim()]) {
+
+                    FrameSceneLabels[key.trim()].push({
+                        endtimestamp: frame_name,
+                        starttimestamp: frame_name,
+                        value
+                    })
+                }
+
+                else {
+
+                    FrameSceneLabels[key.trim()] = {
+                        endtimestamp: frame_name,
+                        starttimestamp: frame_name,
+                        value
+                    }
                 }
             }
         }
